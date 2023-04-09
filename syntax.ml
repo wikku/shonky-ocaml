@@ -13,10 +13,8 @@ and clause = (*  c  *)
   pat list * exp (*  ( p , .. ) -> e  *)
 and def = (*  d  *)
   | DVal of string * exp (*  a -> e  *)
-  | DOp of
-    { intercepts: (string * intercepts) option
-    ; clauses: (string * pat list * exp) list
-    } (*  ah? ac , ..  *)
+  | DIntc of string * intercepts
+  | DClause of string * clause
 and pat = (*  p  *)
   | PVpat of vpat (*  q  *)
   | PThunk of string (*  { a }  *)

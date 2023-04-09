@@ -17,6 +17,13 @@
 %token EOF
 %start <def list> prog
 
+%right "/"
+%right ";"
+%right "(" // TODO: check if app has higher priority in e; e() 
+
+(* highest precedence at the bottom *)
+
+
 %{
 open Syntax
 %}
@@ -26,13 +33,12 @@ open Syntax
 let prog :=
   | gap; ~=terminated(def, gap)*; EOF; <>
 
-let gap := GAP?
+let gap := GAP?; <>
 
 let csep(x) :=
-  gap; ~=separated_list(gap; ","; gap, x); gap; <>
+  gap; ~=separated_list(terminated(",", gap), terminated(x,gap)); <>
 
-let ncsep(x) :=
-  gap; ~=separated_nonempty_list(gap; ","; gap, x); gap; <>
+  (* gap x . gap  — reduce list or shift? *)
 
 let lisp(x) :=
   | "["; l=csep(x); "]";
@@ -41,15 +47,16 @@ let lisp(x) :=
     { fun _nil cons -> cons l r }
 
 let intercepts :=
-  ~=ID; "("; ~=csep(separated_list(GAP, ID)); ")"; ":"; <>
+  | gap; is=separated_nonempty_list(GAP, ID); gap; { [is] }
+  | gap; { [] }
+  | gap; is=separated_nonempty_list(GAP, ID); gap; ","; iss=intercepts; { is :: iss }
+  | gap; ","; iss=intercepts; { [] :: iss }
 
-let clause :=
-  ~=ID; "("; ~=csep(pat); ")"; gap; "->"; gap; ~=exp; <>
 
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
-  | intercepts=intercepts?; gap; clauses=ncsep(clause); { DOp { intercepts; clauses } }
-
+  | ~=ID; "("; ~=intercepts; ")"; gap; ":"; <DIntc>
+  | id=ID; "("; pats=csep(pat); ")"; gap; "->"; gap; e=exp; { DClause (id, (pats, e)) }
 
 let exp :=
   | "'"; ~=ID; <EAtom>
