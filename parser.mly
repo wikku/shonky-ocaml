@@ -15,6 +15,8 @@
 %token LBRACE "{"
 %token RBRACE "}"
 %token EOF
+//%token RPARENGAPCOLON "):"
+//%token RPARENARROW ")->"
 %start <def list> prog
 
 %right "/"
@@ -46,17 +48,16 @@ let lisp(x) :=
   | "["; gap; l=x; gap; "|"; gap; r=x; gap; "]";
     { fun _nil cons -> cons l r }
 
-let intercepts :=
-  | gap; is=separated_nonempty_list(GAP, ID); gap; { [is] }
+let params :=
+  | gap; is=pat_or_atoms; { [is] }
   | gap; { [] }
-  | gap; is=separated_nonempty_list(GAP, ID); gap; ","; iss=intercepts; { is :: iss }
-  | gap; ","; iss=intercepts; { [] :: iss }
-
+  | gap; is=pat_or_atoms; ","; iss=params; { is :: iss }
+  | gap; ","; iss=params; { UAtoms [] :: iss }
 
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
-  | ~=ID; "("; ~=intercepts; ")"; gap; ":"; <DIntc>
-  | id=ID; "("; pats=csep(pat); ")"; gap; "->"; gap; e=exp; { DClause (id, (pats, e)) }
+  | ~=ID; "("; ~=params; ")"; gap; ":"; <DIntc>
+  | ~=ID; "("; ~=params; ")"; gap; "->"; e=exp; <DClause>
 
 let exp :=
   | "'"; ~=ID; <EAtom>
@@ -66,13 +67,23 @@ let exp :=
   | l=exp; ";"; gap; r=exp; <ESnd>
   | l=lisp(exp); { l (EAtom "") (fun car cdr -> ECons(car,cdr)) }
 
-let pat :=
+let pat_(vpat) :=
   | "{"; gap; ~=ID; gap; "}"; <PThunk>
   | "{"; gap; "'"; ~=ID; "("; ~=csep(vpat); ")"; gap; "->"; gap; ~=ID; gap; "}"; <PCmd>
   | ~=vpat; <PVpat>
 
-let vpat :=
-  | ~=ID; <VPVar>
+let pat := pat_(vpat)
+let pat0 := pat_(vpat0)
+
+let vpat0 :=
   | "'"; ~=ID; <VPAtom>
   | "="; gap; ~=ID; <VPAtom>
   | l=lisp(vpat); {l (VPAtom "") (fun car cdr -> VPCons(car,cdr)) }
+
+let pat_or_atoms :=
+  | ~=pat0; gap; <UPat>
+  | ~=nonempty_list(terminated(ID, gap)); <UAtoms>
+
+let vpat :=
+  | ~=vpat0; <>
+  | ~=ID; <VPVar>

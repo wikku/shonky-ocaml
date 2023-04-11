@@ -13,8 +13,8 @@ and clause = (*  c  *)
   pat list * exp (*  ( p , .. ) -> e  *)
 and def = (*  d  *)
   | DVal of string * exp (*  a -> e  *)
-  | DIntc of string * intercepts
-  | DClause of string * clause
+  | DIntc of string * pat_or_atoms list
+  | DClause of string * pat_or_atoms list * exp
 and pat = (*  p  *)
   | PVpat of vpat (*  q  *)
   | PThunk of string (*  { a }  *)
@@ -25,4 +25,6 @@ and vpat = (*  q  *)
   | VPCons of vpat * vpat (*  [ q | q ]  *) (*  [ q , .. ]  *)
   | VPEq of string (*  = a  *)
   | VPText of (char, vpat) Either.t list
-
+and pat_or_atoms =
+  | UPat of pat
+  | UAtoms of string list
