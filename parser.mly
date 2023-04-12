@@ -33,7 +33,7 @@ open Syntax
 %%
 
 let prog :=
-  | gap; ~=terminated(def, gap)*; EOF; <>
+  | gap; ~=def*; EOF; <>
 
 let gap := GAP?; <>
 
@@ -54,9 +54,9 @@ let named_handle_decl := ~=ID; ~=handle_decl; <>
 let named_clause := ~=ID; ~=clause; <>
 
 let def :=
-  | ~=ID; gap; "->"; gap; ~=exp; <DVal>
+  | ~=ID; gap; "->"; gap; ~=exp; gap; <DVal>
   | ~=ioption(terminated(named_handle_decl, gap));
-    ~=separated_nonempty_list(terminated(",", gap), named_clause); <DOp>
+    ~=separated_nonempty_list(terminated(",", gap), terminated(named_clause, gap)); <DOp>
 
 let exp :=
   | "'"; ~=ID; <EAtom>
