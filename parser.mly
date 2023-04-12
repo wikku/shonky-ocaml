@@ -40,8 +40,6 @@ let gap := GAP?; <>
 let csep(x) :=
   gap; ~=separated_list(terminated(",", gap), terminated(x,gap)); <>
 
-  (* gap x . gap  — reduce list or shift? *)
-
 let lisp(x) :=
   | "["; l=csep(x); "]";
     { fun nil cons -> List.fold_right (fun a l -> cons a l) l nil }
