@@ -48,9 +48,7 @@ let lisp(x) :=
   | "["; gap; l=x; gap; "|"; gap; r=x; gap; "]";
     { fun _nil cons -> cons l r }
 
-let params :=
-  | gap; is=pat_or_atoms; { [is] }
-  | gap; is=pat_or_atoms; ","; iss=params; { is :: iss }
+let params := separated_nonempty_list(",", preceded(gap, pat_or_atoms))
 
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
