@@ -48,10 +48,13 @@ let lisp(x) :=
 
 let params := separated_nonempty_list(",", preceded(gap, pat_or_atoms))
 
+let handle_decl := "("; ~=params; ")"; gap; ":"; <>
+let clause := "("; ~=params; ")"; gap; "->"; ~=exp; <>
+
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
-  | ~=ID; "("; ~=params; ")"; gap; ":"; <DIntc>
-  | ~=ID; "("; ~=params; ")"; gap; "->"; e=exp; <DClause>
+  | ~=ID; ~=handle_decl; <DIntc>
+  | ~=ID; ~=clause; <DClause>
 
 let exp :=
   | "'"; ~=ID; <EAtom>

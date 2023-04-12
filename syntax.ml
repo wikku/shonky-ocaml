@@ -8,13 +8,13 @@ type exp = (*  e  *)
   | ELocal of def list * exp (*  {| d* |} e  *)
   | EText of (char, exp) Either.t list
 and intercepts = (*  h  *)
-  string list list (*  ( a * , .. )  *)
+  pat_or_atoms list (*  ( a * , .. )  *)
 and clause = (*  c  *)
-  pat list * exp (*  ( p , .. ) -> e  *)
+  pat_or_atoms list * exp (*  ( p , .. ) -> e  *)
 and def = (*  d  *)
   | DVal of string * exp (*  a -> e  *)
-  | DIntc of string * pat_or_atoms list
-  | DClause of string * pat_or_atoms list * exp
+  | DIntc of string * intercepts
+  | DClause of string * clause
 and pat = (*  p  *)
   | PVpat of vpat (*  q  *)
   | PThunk of string (*  { a }  *)
