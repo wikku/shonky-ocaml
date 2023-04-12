@@ -50,9 +50,7 @@ let lisp(x) :=
 
 let params :=
   | gap; is=pat_or_atoms; { [is] }
-  | gap; { [] }
   | gap; is=pat_or_atoms; ","; iss=params; { is :: iss }
-  | gap; ","; iss=params; { UAtoms [] :: iss }
 
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
@@ -82,7 +80,7 @@ let vpat0 :=
 
 let pat_or_atoms :=
   | ~=pat0; gap; <UPat>
-  | ~=nonempty_list(terminated(ID, gap)); <UAtoms>
+  | ~=list(terminated(ID, gap)); <UAtoms>
 
 let vpat :=
   | ~=vpat0; <>
