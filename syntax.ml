@@ -13,8 +13,7 @@ and clause = (*  c  *)
   pat_or_atoms list * exp (*  ( p , .. ) -> e  *)
 and def = (*  d  *)
   | DVal of string * exp (*  a -> e  *)
-  | DIntc of string * intercepts
-  | DClause of string * clause
+  | DOp of (string * intercepts) option * (string * clause) list
 and pat = (*  p  *)
   | PVpat of vpat (*  q  *)
   | PThunk of string (*  { a }  *)

@@ -50,11 +50,13 @@ let params := separated_nonempty_list(",", preceded(gap, pat_or_atoms))
 
 let handle_decl := "("; ~=params; ")"; gap; ":"; <>
 let clause := "("; ~=params; ")"; gap; "->"; ~=exp; <>
+let named_handle_decl := ~=ID; ~=handle_decl; <>
+let named_clause := ~=ID; ~=clause; <>
 
 let def :=
   | ~=ID; gap; "->"; gap; ~=exp; <DVal>
-  | ~=ID; ~=handle_decl; <DIntc>
-  | ~=ID; ~=clause; <DClause>
+  | ~=ioption(terminated(named_handle_decl, gap));
+    ~=separated_nonempty_list(terminated(",", gap), named_clause); <DOp>
 
 let exp :=
   | "'"; ~=ID; <EAtom>
