@@ -5,6 +5,7 @@ type exp = (*  e  *)
   | EApp of exp * exp list (*  e( e , .. )  *)
   | ESnd of exp * exp (*  e; e  *)
   | EFst of exp * exp (*  e/ e  *)
+  | EThunk of intercepts option * clause list
   | ELocal of def list * exp (*  {| d* |} e  *)
   | EText of (char, exp) Either.t list
 and intercepts = (*  h  *)

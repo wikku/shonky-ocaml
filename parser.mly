@@ -65,6 +65,11 @@ let exp :=
   | l=exp; "/"; gap; r=exp; <EFst>
   | l=exp; ";"; gap; r=exp; <ESnd>
   | l=lisp(exp); { l (EAtom "") (fun car cdr -> ECons(car,cdr)) }
+  | "{"; gap; ~=exp; gap; "}"; { EThunk(None,[[],exp]) }
+  | "{"; gap;
+    ~=ioption(terminated(handle_decl, gap));
+    ~=separated_nonempty_list(terminated(",", gap), terminated(clause, gap));
+    "}"; <EThunk>
 
 let pat_(vpat) :=
   | "{"; gap; ~=ID; gap; "}"; <PThunk>
