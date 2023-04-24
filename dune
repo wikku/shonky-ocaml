@@ -6,3 +6,6 @@
   (modules parser)
   (flags --explain))
 
+(ocamllex
+  (modules lexer))
+
