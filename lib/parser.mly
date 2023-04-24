@@ -49,7 +49,7 @@ let lisp(x) :=
 let params := separated_nonempty_list(",", preceded(gap, pat_or_atoms))
 
 let handle_decl := "("; ~=params; ")"; gap; ":"; <>
-let clause := "("; ~=params; ")"; gap; "->"; ~=exp; <>
+let clause := "("; ~=params; ")"; gap; "->"; gap; ~=exp; <>
 let named_handle_decl := ~=ID; ~=handle_decl; <>
 let named_clause := ~=ID; ~=clause; <>
 
