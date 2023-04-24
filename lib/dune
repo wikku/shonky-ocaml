@@ -1,6 +1,5 @@
-(executable
- (public_name hello)
- (name hello))
+(library
+  (name shonky))
 
 (menhir
   (modules parser)

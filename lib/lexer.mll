@@ -3,7 +3,7 @@ open Parser
 }
 
 rule token = parse
-  | ['\t'-'\r']+ { GAP }
+  | ['\t'-'\r' ' ']+ { GAP }
   | ['A'-'Z' 'a'-'z' '0'-'9']+ as id { ID id }
   | '(' { LPAREN }
   | ')' { RPAREN }
