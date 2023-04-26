@@ -81,7 +81,7 @@ let pat0 := pat_(vpat0)
 
 let vpat0 :=
   | "'"; ~=ID; <VPAtom>
-  | "="; gap; ~=ID; <VPAtom>
+  | "="; gap; ~=ID; <VPEq>
   | l=lisp(vpat); {l (VPAtom "") (fun car cdr -> VPCons(car,cdr)) }
 
 let pat_or_atoms :=
