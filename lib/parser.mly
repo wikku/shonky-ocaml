@@ -15,13 +15,11 @@
 %token LBRACE "{"
 %token RBRACE "}"
 %token EOF
-//%token RPARENGAPCOLON "):"
-//%token RPARENARROW ")->"
 %start <def list> prog
 
 %right "/"
 %right ";"
-%right "(" // TODO: check if app has higher priority in e; e() 
+%right "("
 
 (* highest precedence at the bottom *)
 
