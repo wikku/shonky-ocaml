@@ -29,8 +29,8 @@ and vpat = (*  q  *)
 module P=Presyntax
 
 let rec exp : P.exp -> exp = function
-  | EVar s -> EVar s
-  | EAtom s -> EAtom s
+  | EVar(s) -> EVar s
+  | EAtom(s) -> EAtom s
   | ECons(e1,e2) -> ECons(exp e1, exp e2)
   | EApp(f,args) -> EApp(exp f, List.map exp args)
   | ESnd(e1,e2) -> ECons(exp e1, exp e2)
@@ -44,7 +44,10 @@ and intercepts : P.intercepts -> intercepts =
 and clause : P.clause -> clause =
   fun (ps,e) ->
     List.map
-      (function P.UPat p -> pat p | UAtoms [a] -> PVpat (VPVar a) | UAtoms _ -> failwith "one var expected")
+      (function
+        | P.UPat p -> pat p
+        | UAtoms [a] -> PVpat (VPVar a)
+        | UAtoms _ -> failwith "one var expected")
       ps,
     exp e
 and def : P.def -> def = function

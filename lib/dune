@@ -1,10 +1,9 @@
 (library
-  (name shonky))
+ (name shonky))
 
 (menhir
-  (modules parser)
-  (flags --explain))
+ (modules parser)
+ (flags --explain))
 
 (ocamllex
-  (modules lexer))
-
+ (modules lexer))
