@@ -69,10 +69,10 @@ let exp :=
     ~=separated_nonempty_list(terminated(",", gap), terminated(clause, gap));
     "}"; <EThunk>
 
-let pat_(vpat) :=
+let pat_(outer_vpat) :=
   | "{"; gap; ~=ID; gap; "}"; <PThunk>
   | "{"; gap; "'"; ~=ID; "("; ~=csep(vpat); ")"; gap; "->"; gap; ~=ID; gap; "}"; <PCmd>
-  | ~=vpat; <PVpat>
+  | ~=outer_vpat; <PVpat>
 
 let pat := pat_(vpat)
 let pat0 := pat_(vpat0)
