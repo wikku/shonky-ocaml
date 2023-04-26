@@ -25,7 +25,7 @@
 
 
 %{
-open Syntax
+open Presyntax
 %}
 
 %%
