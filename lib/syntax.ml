@@ -5,7 +5,7 @@ type exp = (*  e  *)
   | EApp of exp * exp list (*  e( e , .. )  *)
   | ESnd of exp * exp (*  e; e  *)
   | EFst of exp * exp (*  e/ e  *)
-  | EThunk of intercepts option * clause list
+  | EThunk of intercepts * clause list
   | ELocal of def list * exp (*  {| d* |} e  *)
   | EText of (char, exp) Either.t list
 and intercepts = (*  h  *)
@@ -14,7 +14,7 @@ and clause = (*  c  *)
   pat list * exp (*  ( p , .. ) -> e  *)
 and def = (*  d  *)
   | DVal of string * exp (*  a -> e  *)
-  | DOp of string * intercepts option * clause list
+  | DOp of string * intercepts * clause list
 and pat = (*  p  *)
   | PVpat of vpat (*  q  *)
   | PThunk of string (*  { a }  *)
@@ -35,7 +35,7 @@ let rec exp : P.exp -> exp = function
   | EApp(f,args) -> EApp(exp f, List.map exp args)
   | ESnd(e1,e2) -> ECons(exp e1, exp e2)
   | EFst(e1,e2) -> EFst(exp e1, exp e2)
-  | EThunk(io,cs) -> EThunk(Option.map intercepts io, List.map clause cs)
+  | EThunk(io,cs) -> EThunk(Option.fold ~some:intercepts ~none:[] io, List.map clause cs)
   | ELocal(ds,e) -> ELocal(List.map def ds, exp e)
   | EText(cs) -> EText(List.map (Either.map ~left:Fun.id ~right:exp) cs)
 and intercepts : P.intercepts -> intercepts =
@@ -56,7 +56,7 @@ and def : P.def -> def = function
     let name = List.hd (List.map fst (Option.to_list sio) @ List.map fst scs) in
     List.iter (fun (s,_) -> assert (name = s)) scs;
     DOp(name,
-        Option.map (fun i -> intercepts (snd i)) sio,
+        Option.fold ~some:(fun i -> intercepts (snd i)) ~none:[] sio,
         List.map (fun c -> clause (snd c)) scs)
 and pat : P.pat -> pat = function
   | PVpat(vp) -> PVpat(vpat vp)
